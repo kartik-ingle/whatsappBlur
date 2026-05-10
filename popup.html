@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsBlur</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #070b14;
+      --card: rgba(18, 24, 38, 0.85);
+      --border: rgba(255,255,255,0.08);
+      --text: #f4f7fb;
+      --muted: #8d98b3;
+      --primary: #00d4aa;
+      --primary-glow: rgba(0,212,170,0.35);
+      --surface: #111827;
+      --surface-2: #1b2436;
+    }
+
+    body {
+      width: 320px;
+      min-height: 420px;
+      font-family: 'Inter', sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(0,212,170,0.14), transparent 35%),
+        radial-gradient(circle at bottom left, rgba(0,153,255,0.12), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(20px);
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      padding: 18px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #00d4aa, #00b894);
+      box-shadow:
+        0 10px 30px rgba(0,212,170,0.25),
+        inset 0 1px 1px rgba(255,255,255,0.15);
+    }
+
+    .logo svg {
+      width: 24px;
+      height: 24px;
+      fill: #04130f;
+    }
+
+    .brand-text h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .main-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 22px;
+      backdrop-filter: blur(18px);
+      box-shadow:
+        0 20px 50px rgba(0,0,0,0.35),
+        inset 0 1px 1px rgba(255,255,255,0.03);
+      transition: 0.3s ease;
+    }
+
+    .main-card.theme-on {
+      border-color: rgba(0,212,170,0.25);
+      box-shadow:
+        0 0 0 1px rgba(0,212,170,0.08),
+        0 20px 50px rgba(0,0,0,0.4),
+        0 0 40px rgba(0,212,170,0.08);
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .status-title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6b7280;
+      transition: 0.3s ease;
+    }
+
+    .status-dot.active {
+      background: var(--primary);
+      box-shadow: 0 0 10px var(--primary);
+    }
+
+    #status-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(0,212,170,0.08), rgba(0,153,255,0.08));
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 22px;
+    }
+
+    .hero h2 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .hero p {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .toggle-text h3 {
+      font-size: 14px;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .toggle-text p {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 180px;
+    }
+
+    .switch {
+      position: relative;
+      width: 64px;
+      height: 34px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: 0.35s ease;
+      overflow: hidden;
+    }
+
+    .slider::before {
+      content: '';
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: white;
+      transition: 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    }
+
+    input:checked + .slider {
+      background: rgba(0,212,170,0.2);
+      border-color: rgba(0,212,170,0.6);
+      box-shadow: 0 0 20px rgba(0,212,170,0.18);
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(30px);
+      background: var(--primary);
+    }
+
+    .preview {
+      margin-top: 22px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .preview-header {
+      height: 14px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .preview-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bubble {
+      height: 10px;
+      border-radius: 999px;
+    }
+
+    .bubble.one {
+      width: 72%;
+      background: #202a3b;
+    }
+
+    .bubble.two {
+      width: 55%;
+      align-self: flex-end;
+      background: rgba(0,212,170,0.25);
+    }
+
+    .bubble.three {
+      width: 62%;
+      background: #202a3b;
+    }
+
+    .open-btn {
+      width: 100%;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(0,212,170,0.2);
+      background:
+        linear-gradient(135deg, rgba(0,212,170,0.18), rgba(0,212,170,0.08));
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .open-btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0,212,170,0.5);
+      box-shadow: 0 10px 25px rgba(0,212,170,0.14);
+    }
+
+    .open-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.6;
+    }
+
+    .footer span {
+      color: var(--primary);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="top">
+      <div class="brand">
+        <div class="logo">
+          <svg viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"></path>
+          </svg>
+        </div>
+
+        <div class="brand-text">
+          <h1>WhatsBlur</h1>
+          <p>Privacy Mode for WhatsApp Web</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-card" id="card">
+
+      <div class="status-row">
+        <div class="status-title">Blur Protection</div>
+
+        <div class="status-pill">
+          <div class="status-dot" id="status-dot"></div>
+          <span id="status-text">Loading...</span>
+        </div>
+      </div>
+
+      <div class="hero">
+        <h2>Screen Share Safely</h2>
+        <p>
+          Blur sensitive WhatsApp messages instantly and reveal them only on intentional hover.
+        </p>
+      </div>
+
+      <div class="toggle-wrapper">
+
+        <div class="toggle-text">
+          <h3>Enable Blur</h3>
+          <p>
+            Protect your chats while recording, streaming, or sharing your screen.
+          </p>
+        </div>
+
+        <label class="switch">
+          <input type="checkbox" id="toggle" />
+          <span class="slider"></span>
+        </label>
+
+      </div>
+
+      <div class="preview">
+        <div class="preview-header"></div>
+
+        <div class="preview-body">
+          <div class="bubble one"></div>
+          <div class="bubble two"></div>
+          <div class="bubble three"></div>
+        </div>
+      </div>
+
+      <button class="open-btn" id="open-wa">
+        <svg viewBox="0 0 24 24">
+          <path d="M14 3v2H7v14h10v-3h2v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h8Zm5.707 6.293-1.414 1.414L19.586 12H11v2h8.586l-1.293 1.293 1.414 1.414L22.414 13l.293-.293-.293-.293-2.707-2.707Z"/>
+        </svg>
+        Open WhatsApp Web
+      </button>
+
+    </div>
+
+    <div class="footer">
+      Works only on <span>web.whatsapp.com</span>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+
